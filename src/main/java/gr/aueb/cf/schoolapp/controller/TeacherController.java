@@ -1,6 +1,5 @@
 package gr.aueb.cf.schoolapp.controller;
 
-
 import gr.aueb.cf.schoolapp.dto.RegionReadOnlyDTO;
 import gr.aueb.cf.schoolapp.dto.TeacherInsertDTO;
 import gr.aueb.cf.schoolapp.dto.TeacherReadOnlyDTO;
@@ -21,39 +20,42 @@ import java.util.List;
 public class TeacherController {
 
     @GetMapping("/insert")
-    public String getTeacherForm(Model model){
+    public String getTeacherForm(Model model) {
         model.addAttribute("teacherInsertDTO", TeacherInsertDTO.empty());
+        // model.addAttribute("regionsReadOnlyDTO", regions());
         return "teacher-insert";
     }
 
     @PostMapping("/insert")
-    public String teacherInsert(@Valid TeacherInsertDTO teacherInsertDTO,
-                                BindingResult bindingResult,
-                                Model model,
-                                RedirectAttributes redirectAttributes){
-        if(bindingResult.hasErrors()){
+    public String teacherInsert(@Valid @ModelAttribute("teacherInsertDTO") TeacherInsertDTO teacherInsertDTO,
+                                BindingResult bindingResult, Model model,
+                                RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            // model.addAttribute("regionsReadOnlyDTO", regions());
             return "teacher-insert";
         }
 
-        //save teacher to DB
-        TeacherReadOnlyDTO teacherReadOnlyDTO = new TeacherReadOnlyDTO("afc-1234", "Alice", "Wonderland");
-        // model.addAttribute("teacherReadOnlyDTO", teacherReadOnlyDTO);
+        // save teacher to DB
+        TeacherReadOnlyDTO teacherReadOnlyDTO = new TeacherReadOnlyDTO("acfd-1234", "Αθανάσιος", "Ανδρούτσος");
+        //model.addAttribute("teacherReadOnlyDTO", teacherReadOnlyDTO);
 
-
-        //RPG - Post-Redirect-Get
-        redirectAttributes.addFlashAttribute("teacherInsertDTO", teacherInsertDTO);
+        // PRG - Post-Redirect-Get
+        redirectAttributes.addFlashAttribute("teacherReadOnlyDTO", teacherReadOnlyDTO);
         return "redirect:/teachers/success";
     }
 
-
-    @ModelAttribute("regionsReadOnlyDTO")
-    public List<RegionReadOnlyDTO> regions(){
-        return List.of(
-                new RegionReadOnlyDTO(1L, "Athens"),
-                new RegionReadOnlyDTO(2L, "Patra"),
-                new RegionReadOnlyDTO(3L, "Thessaloniki")
-        );
+    @GetMapping("/success")
+    public String teacherSuccess(Model model) {
+        return "teacher-success";
     }
 
 
+    @ModelAttribute("regionsReadOnlyDTO")       // Εκτελείται πριν από κάθε request handler
+    public List<RegionReadOnlyDTO> regions() {
+        return List.of(
+                new RegionReadOnlyDTO(1L, "Αθήνα"),
+                new RegionReadOnlyDTO(2L, "Βόλος"),
+                new RegionReadOnlyDTO(3L, "Θεσσαλονίκη"));
+    }
 }
