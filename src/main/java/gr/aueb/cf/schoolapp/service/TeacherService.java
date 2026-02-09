@@ -49,12 +49,11 @@ public class TeacherService implements ITeacherService {
             log.info("Teacher with vat={} saved successfully", dto.vat());
             return mapper.mapToTeacherReadOnlyDTO(teacher);
         } catch (EntityAlreadyExistsException e) {
-            log.error("Save failed for teacher with vat={}. Teacher already exists", dto.vat());     // Structured Logging
+            log.error("Save failed for teacher with vat={}. Teacher already exists", dto.vat(), e);     // Structured Logging
             throw e;
         } catch (EntityInvalidArgumentException e) {
             log.error("Save failed for teacher with vat={}. Region id={} invalid", dto.vat(), dto.regionId());
             throw e;
         }
-
     }
 }
